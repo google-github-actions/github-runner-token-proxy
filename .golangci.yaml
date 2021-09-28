@@ -1,0 +1,90 @@
+run:
+  # default: '1m'
+  timeout: '5m'
+
+  # default: []
+  build-tags:
+  - 'all'
+
+  # default: ''
+  modules-download-mode: 'readonly'
+
+  # default: false
+  allow-parallel-runners: true
+
+linters:
+  enable:
+  - 'asciicheck'
+  - 'bodyclose'
+  - 'deadcode'
+  - 'depguard'
+  - 'dogsled'
+  - 'dupl'
+  - 'durationcheck'
+  - 'errcheck'
+  - 'errname'
+  - 'errorlint'
+  - 'exhaustive'
+  - 'exportloopref'
+  - 'forbidigo'
+  - 'forcetypeassert'
+  - 'gci'
+  - 'gochecknoinits'
+  - 'goconst'
+  - 'gocritic'
+  - 'gocyclo'
+  - 'godot'
+  - 'godox'
+  - 'gofmt'
+  - 'gofumpt'
+  - 'goheader'
+  - 'goimports'
+  - 'gomoddirectives'
+  - 'gomodguard'
+  - 'goprintffuncname'
+  - 'gosec'
+  - 'gosimple'
+  - 'govet'
+  - 'ifshort'
+  - 'importas'
+  - 'ineffassign'
+  - 'lll'
+  - 'makezero'
+  - 'misspell'
+  - 'nakedret'
+  - 'nestif'
+  - 'nilerr'
+  - 'noctx'
+  - 'nolintlint'
+  - 'paralleltest'
+  - 'prealloc'
+  - 'predeclared'
+  - 'promlinter'
+  - 'revive'
+  - 'rowserrcheck'
+  - 'sqlclosecheck'
+  - 'staticcheck'
+  - 'stylecheck'
+  - 'thelper'
+  - 'tparallel'
+  - 'typecheck'
+  - 'unconvert'
+  - 'unparam'
+  - 'unused'
+  - 'varcheck'
+  - 'wastedassign'
+  - 'whitespace'
+
+issues:
+  # default: []
+  exclude:
+
+  # default: 50
+  max-issues-per-linter: 0
+
+  # default: 3
+  max-same-issues: 0
+
+severity:
+  # default: ''
+  default-severity: error
