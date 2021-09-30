@@ -18,6 +18,8 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/sethvargo/github-runner-token-proxy/internal/logging"
 )
 
 var (
@@ -77,6 +79,9 @@ var (
 			MaxIdleConnsPerHost:   -1,
 		},
 	}
+
+	// logger is the structured logger.
+	logger = logging.NewLogger(os.Stdout, os.Stderr)
 )
 
 func main() {
@@ -85,9 +90,10 @@ func main() {
 
 	if err := realMain(ctx); err != nil {
 		done()
-		fmt.Fprintf(os.Stderr, "%s\n", err)
-		os.Exit(1) //nolint:gocritic // defer os backup, but done is manually called
+		logger.Fatal("error from main process", "error", err)
 	}
+
+	logger.Info("shutting down")
 }
 
 func realMain(ctx context.Context) error {
@@ -152,6 +158,7 @@ func handleToken(ts TokenSource, typ string) http.Handler {
 		ctx := r.Context()
 
 		if r.Method != "POST" {
+			logger.Warn("expected http method to be POST, got %q", r.Method)
 			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 			return
 		}
@@ -161,12 +168,14 @@ func handleToken(ts TokenSource, typ string) http.Handler {
 		dec := json.NewDecoder(lr)
 		dec.DisallowUnknownFields()
 		if err := dec.Decode(&tr); err != nil {
+			logger.Warn("failed to decode request", "error", err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		scope := strings.Trim(tr.Scope, "/")
 		if scope == "" {
+			logger.Warn("missing scope in request body")
 			http.Error(w, "missing scope in request body", http.StatusBadRequest)
 			return
 		}
@@ -174,6 +183,7 @@ func handleToken(ts TokenSource, typ string) http.Handler {
 		// Parse the deny list first, since it takes priority.
 		for _, entry := range deniedScopes {
 			if entry.MatchString(scope) {
+				logger.Warn("scope is in denied list", "scope", scope)
 				http.Error(w, "scope is not allowed", http.StatusUnauthorized)
 				return
 			}
@@ -188,18 +198,21 @@ func handleToken(ts TokenSource, typ string) http.Handler {
 			}
 		}
 		if !foundMatch {
+			logger.Warn("scope is not allowed", "scope", scope)
 			http.Error(w, "scope is not allowed", http.StatusUnauthorized)
 			return
 		}
 
 		rtr, err := githubTokenRequest(ctx, ts, scope, typ)
 		if err != nil {
+			logger.Warn("failed to make token request", "error", err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		b, err := json.Marshal(rtr)
 		if err != nil {
+			logger.Error("failed to marshal json response", "error", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
