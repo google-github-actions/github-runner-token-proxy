@@ -8,10 +8,6 @@ ENV GO111MODULE=on \
   GOARCH=amd64
 
 WORKDIR /src
-COPY go.* .
-RUN go mod download
-
-WORKDIR /src
 COPY . .
 
 RUN go build \
