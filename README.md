@@ -114,7 +114,7 @@ should run anywhere.
     Google Secret Manager:
 
     ```sh
-    echo -n "<VALUE FROM GITHUB>" | gcloud secrets create "github-token" \
+    echo -n "<VALUE FROM GITHUB>" | gcloud secrets create "ght-proxy-token" \
       --project="${PROJECT_ID}" \
       --data-file=-
     ```
@@ -123,7 +123,7 @@ should run anywhere.
     Secret Manager:
 
     ```sh
-    echo -n "<VALUE FROM GITHUB>" | gcloud secrets create "github-app-private-key" \
+    echo -n "<VALUE FROM GITHUB>" | gcloud secrets create "ght-proxy-app-private-key" \
       --project="${PROJECT_ID}" \
       --data-file=-
     ```
@@ -173,7 +173,7 @@ should run anywhere.
       --quiet \
       --project="${PROJECT_ID}" \
       --region="us-east1" \
-      --set-secrets="GITHUB_TOKEN=github-token:1" \
+      --set-secrets="GITHUB_TOKEN=ght-proxy-token:1" \
       --set-env-vars="ALLOWED_SCOPES=match:.*" \
       --image="us-docker.pkg.dev/${PROJECT_ID}/ght-proxy/ght-proxy" \
       --service-account="ght-proxy@${PROJECT_ID}.iam.gserviceaccount.com"
@@ -182,12 +182,14 @@ should run anywhere.
     For a GitHub App:
 
     ```sh
+    export GITHUB_INSTALLATION_ID=<VALUE_FROM_GITHUB>
+    export GITHUB_APP_ID=<VALUE_FROM_GITHUB>
     gcloud beta run deploy "ght-proxy" \
       --quiet \
       --project="${PROJECT_ID}" \
       --region="us-east1" \
-      --set-secrets="GITHUB_APP_PRIVATE_KEY=github-app-private-key:1" \
-      --set-env-vars="ALLOWED_SCOPES=match:.*,GITHUB_INSTALLATION_ID=19694597" \
+      --set-secrets="GITHUB_APP_PRIVATE_KEY=ght-proxy-app-private-key:1" \
+      --set-env-vars="ALLOWED_SCOPES=match:.*,GITHUB_INSTALLATION_ID=${GITHUB_INSTALLATION_ID?},GITHUB_APP_ID=${GITHUB_APP_ID?}" \
       --image="gcr.io/${PROJECT_ID}/ght-proxy" \
       --service-account="ght-proxy@${PROJECT_ID}.iam.gserviceaccount.com"
     ```
