@@ -176,7 +176,8 @@ should run anywhere.
       --set-secrets="GITHUB_TOKEN=ght-proxy-token:1" \
       --set-env-vars="ALLOWED_SCOPES=match:.*" \
       --image="us-docker.pkg.dev/${PROJECT_ID}/ght-proxy/ght-proxy" \
-      --service-account="ght-proxy@${PROJECT_ID}.iam.gserviceaccount.com"
+      --service-account="ght-proxy@${PROJECT_ID}.iam.gserviceaccount.com" \
+      --ingress=internal
     ```
 
     For a GitHub App:
@@ -191,7 +192,8 @@ should run anywhere.
       --set-secrets="GITHUB_APP_PRIVATE_KEY=ght-proxy-app-private-key:1" \
       --set-env-vars="ALLOWED_SCOPES=match:.*,GITHUB_INSTALLATION_ID=${GITHUB_INSTALLATION_ID?},GITHUB_APP_ID=${GITHUB_APP_ID?}" \
       --image="gcr.io/${PROJECT_ID}/ght-proxy" \
-      --service-account="ght-proxy@${PROJECT_ID}.iam.gserviceaccount.com"
+      --service-account="ght-proxy@${PROJECT_ID}.iam.gserviceaccount.com" \
+      --ingress=internal
     ```
 
 
